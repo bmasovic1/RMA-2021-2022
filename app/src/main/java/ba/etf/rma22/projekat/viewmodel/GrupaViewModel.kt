@@ -19,4 +19,8 @@ class GrupaViewModel {
         GrupaRepository.upisiGrupu(GrupaRepository.getGroupsByIstrazivanje(istr).first { grupa: Grupa -> grupa.naziv == grup })
     }
 
+    fun dajGrupu(grup: String,istrazivanje: String):Grupa{
+        return GrupaRepository.getGroupsByIstrazivanje(istrazivanje).first{ grupa: Grupa -> grupa.naziv == grup }
+    }
+
 }

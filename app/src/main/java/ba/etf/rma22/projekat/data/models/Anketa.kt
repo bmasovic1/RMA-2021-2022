@@ -7,8 +7,8 @@ data class Anketa(
     val nazivIstrazivanja: String,
     val datumPocetka: Date,
     val datumKraj: Date,
-    val datumRada: Date?,
+    var datumRada: Date?,
     val trajanje: Int,
     val nazivGrupe: String,
-    val progres: Float?
+    var progres: Float?
 )

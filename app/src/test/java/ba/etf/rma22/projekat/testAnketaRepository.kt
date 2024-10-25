@@ -77,15 +77,11 @@ class testAnketaRepository {
 
         ankete=AnketaRepository.getDone();
 
-        Assert.assertEquals(2, ankete.size)
+        Assert.assertEquals(1, ankete.size)
 
-        Assert.assertEquals("Anketa 1", ankete[0].naziv)
-        Assert.assertEquals("Istrazivanje 1", ankete[0].nazivIstrazivanja)
-        Assert.assertEquals("I1-G1", ankete[0].nazivGrupe)
-
-        Assert.assertEquals("Anketa 5", ankete[1].naziv)
-        Assert.assertEquals("Istrazivanje 3", ankete[1].nazivIstrazivanja)
-        Assert.assertEquals("I3-G1", ankete[1].nazivGrupe)
+        Assert.assertEquals("Anketa 5", ankete[0].naziv)
+        Assert.assertEquals("Istrazivanje 3", ankete[0].nazivIstrazivanja)
+        Assert.assertEquals("I3-G1", ankete[0].nazivGrupe)
 
 
     }

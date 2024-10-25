@@ -1,5 +1,6 @@
 package ba.etf.rma22.projekat.view
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -12,7 +13,7 @@ import ba.etf.rma22.projekat.data.models.Anketa
 import java.util.*
 
 
-class ListaAnketaAdapter(var ankete: List<Anketa>): RecyclerView.Adapter<ListaAnketaAdapter.AnketaViewHolder>() {
+class ListaAnketaAdapter(var ankete: List<Anketa>, private val onItemClicked: (anketa:Anketa) -> Unit): RecyclerView.Adapter<ListaAnketaAdapter.AnketaViewHolder>() {
 
     inner class AnketaViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
@@ -36,11 +37,14 @@ class ListaAnketaAdapter(var ankete: List<Anketa>): RecyclerView.Adapter<ListaAn
         return ankete.size;
     }
 
+    fun updateAnkete(anket: List<Anketa>) {
+        this.ankete = anket
+        notifyDataSetChanged()
+    }
+
     fun zaokruzi(value1: Float): Int {
         var value = value1*100
         var mult = 20
-        //Log.e("REZ1", value1.toString())
-        //Log.e("REZ2", value.toString())
         if (value < 0) {
             mult = -20
             value = -value
@@ -61,9 +65,11 @@ class ListaAnketaAdapter(var ankete: List<Anketa>): RecyclerView.Adapter<ListaAn
         holder.nazivAnkete.text = ankete[position].naziv;
         holder.nazivIstrazivanja.text = ankete[position].nazivIstrazivanja;
 
-        if(ankete[position].progres==null && ankete[position].datumKraj.before(Date())){
+        holder.itemView.setOnClickListener {
+            onItemClicked(ankete[position])
+        }
 
-            //Log.e("DATUUUMMMM",  ankete[position].datumKraj.toString())
+        if(ankete[position].datumKraj.before(Date())){
 
             holder.stanjeAnkete.setImageResource(R.drawable.crvena);
             holder.progresZavrsetka.setProgress(0);
@@ -72,12 +78,12 @@ class ListaAnketaAdapter(var ankete: List<Anketa>): RecyclerView.Adapter<ListaAn
 
             holder.datum.text = "Anketa zatvorena: " + ispisDatuma(ankete[position].datumKraj)
 
-        }else if(ankete[position].progres!=null){
-
-            //Log.e("DATUUUMMMM",  ankete[position].datumRada.toString())
+        }else if(ankete[position].datumRada!=null){
 
             holder.stanjeAnkete.setImageResource(R.drawable.plava);
-            holder.progresZavrsetka.setProgress(zaokruzi(ankete[position].progres!!))
+
+            if(ankete[position].progres!=null)
+                holder.progresZavrsetka.setProgress(zaokruzi(ankete[position].progres!!))
 
             //ankete[position].progres?.let { holder.progresZavrsetka.setProgress(it.toInt()) };
             //holder.datum.text = "Anketa urađena: " + (ankete[position].datumRada?.date!!)+"."+ (ankete[position].datumRada?.month!!)+"."+(ankete[position].datumRada?.year!!);
@@ -85,7 +91,6 @@ class ListaAnketaAdapter(var ankete: List<Anketa>): RecyclerView.Adapter<ListaAn
             holder.datum.text = "Anketa urađena: " + ispisDatuma(ankete[position].datumRada!!)
 
         }else if(ankete[position].datumPocetka.after(Date())){
-            //Log.e("DATUUUMMMM",  ankete[position].datumKraj.toString())
 
             holder.stanjeAnkete.setImageResource(R.drawable.zuta);
             holder.progresZavrsetka.setProgress(0);
@@ -98,6 +103,9 @@ class ListaAnketaAdapter(var ankete: List<Anketa>): RecyclerView.Adapter<ListaAn
 
             holder.stanjeAnkete.setImageResource(R.drawable.zelena);
             holder.progresZavrsetka.setProgress(0);
+            if(ankete[position].progres!=null)
+                holder.progresZavrsetka.setProgress(zaokruzi(ankete[position].progres!!))
+
             //holder.datum.text = "Vrijeme zatvaranja: " + (ankete[position].datumKraj)+"."+ (ankete[position].datumKraj?.month!!)+"."+(ankete[position].datumKraj?.year!!);
             holder.datum.text = "Vrijeme zatvaranja: " +  ispisDatuma(ankete[position].datumKraj)
 
