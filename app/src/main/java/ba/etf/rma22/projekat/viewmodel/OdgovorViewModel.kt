@@ -1,5 +1,6 @@
 package ba.etf.rma22.projekat.viewmodel
 
+import android.content.Context
 import ba.etf.rma22.projekat.data.models.Odgovor
 import ba.etf.rma22.projekat.data.repositories.OdgovorRepository
 import kotlinx.coroutines.CoroutineScope
@@ -11,9 +12,9 @@ class OdgovorViewModel {
 
     val scope = CoroutineScope(Job() + Dispatchers.Main)
 
-    fun getOdgovori(anketaId: Int,onSuccess: (List<Odgovor>) -> Unit, onError: () -> Unit) {
+    fun getOdgovori(context: Context, anketaId: Int,onSuccess: (List<Odgovor>) -> Unit, onError: () -> Unit) {
         scope.launch {
-
+            OdgovorRepository.setContext(context)
             val result = OdgovorRepository.getOdgovoriAnketa(anketaId)
             when (result) {
                 is List<Odgovor> ->  onSuccess?.invoke(result)
@@ -23,9 +24,9 @@ class OdgovorViewModel {
 
     }
 
-    fun setOdgovor(idAnketaTaken:Int,idPitanje:Int,odgovor:Int,onSuccess: (Int) -> Unit, onError: () -> Unit) {
+    fun setOdgovor(context: Context, idAnketaTaken:Int,idPitanje:Int,odgovor:Int,onSuccess: (Int) -> Unit, onError: () -> Unit) {
         scope.launch {
-
+            OdgovorRepository.setContext(context)
             val result = OdgovorRepository.postaviOdgovorAnketa(idAnketaTaken,idPitanje,odgovor)
             when (result) {
                 is Int -> onSuccess?.invoke(result)

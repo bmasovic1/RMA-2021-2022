@@ -39,6 +39,7 @@ class FragmentAnkete : Fragment() {
     private var grupaViewModel = GrupaViewModel();
     private var pitanjeAnketaViewModel = PitanjeAnketaViewModel();
     private var takeAnketaViewModel =TakeAnketaViewModel()
+    private var testInternet: Boolean = true;
 
     private var anketeUpisane = listOf<Anketa>();
 
@@ -55,6 +56,12 @@ class FragmentAnkete : Fragment() {
         anketaAdapter = ListaAnketaAdapter(arrayListOf()) { anket -> pocniAnketu(anket) }
         ankete.adapter = anketaAdapter
 
+        takeAnketaViewModel.tetInternet(requireContext(), onSuccess ={
+
+            if(it!=true)
+                testInternet=false
+
+        }, onError = {})
 
         filter.adapter = ArrayAdapter<String>(
 
@@ -67,8 +74,8 @@ class FragmentAnkete : Fragment() {
 
                 when (position) {
 
-                    0 -> anketaViewModel.getMyAnkete(onSuccess = ::onSuccess,onError = ::onError)
-                    1 -> anketaViewModel.getAll(onSuccess = ::onSuccess,onError = ::onError)
+                    0 -> anketaViewModel.getMyAnkete(context!!,onSuccess = ::onSuccess,onError = ::onError)
+                    1 -> anketaViewModel.getAll(context!!,onSuccess = ::onSuccess,onError = ::onError)
 
                 }
 
@@ -101,7 +108,7 @@ class FragmentAnkete : Fragment() {
 
         if(filter.selectedItem.toString()=="Sve moje ankete") {
 
-            takeAnketaViewModel.zapoceteAnkete( onSuccess ={
+            takeAnketaViewModel.zapoceteAnkete(requireContext(), onSuccess ={
 
                 val zapoceteAn = it
                 var test=0
@@ -110,7 +117,7 @@ class FragmentAnkete : Fragment() {
                     if(zap.AnketumId==ank.id){
                         test=1
 
-                        pitanjeAnketaViewModel.dajPitanjaAnkete(ank.id, onSuccess = {
+                        pitanjeAnketaViewModel.dajPitanjaAnkete(requireContext(), ank.id, onSuccess = {
 
                             var lista: List<Pitanje>
                             lista = it
@@ -152,14 +159,14 @@ class FragmentAnkete : Fragment() {
                     }
                 }
 
-                if(test==0){
-                    takeAnketaViewModel.zapociAnketu(ank.id, onSuccess ={
+                if(test==0 && testInternet){
+                    takeAnketaViewModel.zapociAnketu(requireContext(),ank.id, onSuccess ={
 
                         var pocetaA=it
 
                         var lista: List<Pitanje>
 
-                        pitanjeAnketaViewModel.dajPitanjaAnkete(ank.id, onSuccess = {
+                        pitanjeAnketaViewModel.dajPitanjaAnkete(requireContext(),ank.id, onSuccess = {
 
                             lista = it
 
@@ -207,13 +214,13 @@ class FragmentAnkete : Fragment() {
                 }
 
             }, onError = {
-                takeAnketaViewModel.zapociAnketu(ank.id, onSuccess ={
+                takeAnketaViewModel.zapociAnketu(requireContext(),ank.id, onSuccess ={
 
                     var pocetaA=it
 
                     var lista: List<Pitanje>
 
-                    pitanjeAnketaViewModel.dajPitanjaAnkete(ank.id, onSuccess = {
+                    pitanjeAnketaViewModel.dajPitanjaAnkete(requireContext(),ank.id, onSuccess = {
 
                         lista = it
 

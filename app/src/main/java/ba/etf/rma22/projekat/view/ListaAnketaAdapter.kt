@@ -1,14 +1,19 @@
 package ba.etf.rma22.projekat.view
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.Anketa
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -41,6 +46,14 @@ class ListaAnketaAdapter(var ankete: List<Anketa>, private val onItemClicked: (a
         notifyDataSetChanged()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun stringToDate(datum :String):Date{
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val localDate = LocalDate.parse(datum, formatter)
+        val date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
+        return date
+    }
+
     fun zaokruzi(value1: Float): Int {
         var value = value1*100
         var mult = 20
@@ -59,6 +72,7 @@ class ListaAnketaAdapter(var ankete: List<Anketa>, private val onItemClicked: (a
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: AnketaViewHolder, position: Int) {
 
         holder.nazivAnkete.text = ankete[position].naziv;
@@ -68,14 +82,14 @@ class ListaAnketaAdapter(var ankete: List<Anketa>, private val onItemClicked: (a
             onItemClicked(ankete[position])
         }
 
-        if( ankete[position].datumKraj!=null && ankete[position].datumKraj!!.before(Date())){
+        if( ankete[position].datumKraj!=null && stringToDate(ankete[position].datumKraj!!).before(Date())){
 
             holder.stanjeAnkete.setImageResource(R.drawable.crvena);
             holder.progresZavrsetka.setProgress(0);
 
             //holder.datum.text = "Anketa zatvorena: "+(ankete[position].datumKraj)+"."+ (ankete[position].datumKraj?.month!!)+"."+(ankete[position].datumKraj?.year!!);
 
-            holder.datum.text = "Anketa zatvorena: " + ispisDatuma(ankete[position].datumKraj!!)
+            holder.datum.text = "Anketa zatvorena: " + ispisDatuma(stringToDate(ankete[position].datumKraj!!))
 
         }else if(ankete[position].datumRada!=null && ankete[position].progres==1f){
 
@@ -87,16 +101,16 @@ class ListaAnketaAdapter(var ankete: List<Anketa>, private val onItemClicked: (a
             //ankete[position].progres?.let { holder.progresZavrsetka.setProgress(it.toInt()) };
             //holder.datum.text = "Anketa urađena: " + (ankete[position].datumRada?.date!!)+"."+ (ankete[position].datumRada?.month!!)+"."+(ankete[position].datumRada?.year!!);
 
-            holder.datum.text = "Anketa urađena: " + ispisDatuma(ankete[position].datumRada!!)
+            holder.datum.text = "Anketa urađena: " + ispisDatuma(stringToDate(ankete[position].datumRada!!))
 
-        }else if(ankete[position].datumPocetak.after(Date())){
+        }else if(stringToDate(ankete[position].datumPocetak).after(Date())){
 
             holder.stanjeAnkete.setImageResource(R.drawable.zuta);
             holder.progresZavrsetka.setProgress(0);
 
             //holder.datum.text = "Vrijeme aktiviranja: " + (ankete[position].datumPocetka.date)+"."+ (ankete[position].datumPocetka?.month!!)+"."+(ankete[position].datumPocetka?.year!!);
 
-            holder.datum.text = "Vrijeme aktiviranja: " + ispisDatuma(ankete[position].datumPocetak)
+            holder.datum.text = "Vrijeme aktiviranja: " + ispisDatuma(stringToDate(ankete[position].datumPocetak))
 
         }else{
 
@@ -108,7 +122,7 @@ class ListaAnketaAdapter(var ankete: List<Anketa>, private val onItemClicked: (a
             //holder.datum.text = "Vrijeme zatvaranja: " + (ankete[position].datumKraj)+"."+ (ankete[position].datumKraj?.month!!)+"."+(ankete[position].datumKraj?.year!!);
 
             if(ankete[position].datumKraj!=null)
-                holder.datum.text = "Vrijeme zatvaranja: " +  ispisDatuma(ankete[position].datumKraj!!)
+                holder.datum.text = "Vrijeme zatvaranja: " +  ispisDatuma(stringToDate(ankete[position].datumKraj!!))
             else
                 holder.datum.text = "Vrijeme zatvaranja: null"
 

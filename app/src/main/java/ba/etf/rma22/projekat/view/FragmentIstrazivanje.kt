@@ -95,10 +95,14 @@ class FragmentIstrazivanje (): Fragment() {
                 grupeSpinner.adapter=grupeAdapter
 
                 istrazivanjeAdapter.clear()
-                istrazivanjeIGrupaViewModel.getNEUpisanaIstrazivanja(godina.toString(), onSuccess = ::onSuccessI, onError = ::onError)
+                istrazivanjeIGrupaViewModel.getNEUpisanaIstrazivanja(context!!,godina.toString(), onSuccess = ::onSuccessI, onError = ::onError)
 
 
                 if(istrazivanjaSpinner.adapter.isEmpty) {
+                    dodaj.isVisible=false
+                }
+
+                if(grupeSpinner.adapter.isEmpty) {
                     dodaj.isVisible=false
                 }
 
@@ -120,7 +124,7 @@ class FragmentIstrazivanje (): Fragment() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
-                istrazivanjeIGrupaViewModel.getGrupeZaIstrazivanje(istrazivanjaSpinner.selectedItem.toString(),onSuccess = ::onSuccessG, onError = ::onError)
+                istrazivanjeIGrupaViewModel.getGrupeZaIstrazivanje(context!!,istrazivanjaSpinner.selectedItem.toString(),onSuccess = ::onSuccessG, onError = ::onError)
 
 
                 if(grupeSpinner.adapter.isEmpty) {
@@ -141,10 +145,21 @@ class FragmentIstrazivanje (): Fragment() {
 
         dodaj.setOnClickListener{
 
-            istrazivanjeIGrupaViewModel.upisiStudenta(grupeSpinner.selectedItem.toString(), onSuccess = ::onSuccessU, onError = ::onError)
+            istrazivanjeIGrupaViewModel.upisiStudenta(requireContext(), grupeSpinner.selectedItem.toString(), onSuccess = {
+                if(it) {
+                    pagerAdapter.zamijeni(1,
+                        FragmentPoruka.newInstance("Uspješno ste upisani u grupu ${grupeSpinner.selectedItem.toString()} istraživanja ${istrazivanjaSpinner.selectedItem.toString()}!"))
+                    pagerAdapter.zamijeni(0, FragmentAnkete.newInstance(pagerAdapter))
+                }
+                else{
+                    val toast = Toast.makeText(context, "Potrebna internet konekcija", Toast.LENGTH_SHORT)
+                    toast.show()
+                }
+            }, onError = {
 
-            pagerAdapter.zamijeni(1, FragmentPoruka.newInstance("Uspješno ste upisani u grupu ${grupeSpinner.selectedItem.toString()} istraživanja ${istrazivanjaSpinner.selectedItem.toString()}!"))
-            pagerAdapter.zamijeni(0, FragmentAnkete.newInstance(pagerAdapter))
+            })
+
+
 
         }
 

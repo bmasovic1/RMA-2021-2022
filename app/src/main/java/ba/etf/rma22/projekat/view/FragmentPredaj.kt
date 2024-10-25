@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import ba.etf.rma22.projekat.data.models.Anketa
-import java.util.*
 
 class FragmentPredaj(private var anketa : Anketa, private var velicina:Int) : Fragment() {
 
@@ -65,6 +63,7 @@ class FragmentPredaj(private var anketa : Anketa, private var velicina:Int) : Fr
 
         }
 
+
         return view
 
     }
@@ -87,9 +86,9 @@ class FragmentPredaj(private var anketa : Anketa, private var velicina:Int) : Fr
     }
 
     fun provjera(){
-       // if(anketa.progres==1f){
-       //      predaj.isVisible = false
-       // }
+        // if(anketa.progres==1f){
+        //      predaj.isVisible = false
+        // }
     }
 
 }

@@ -11,7 +11,7 @@ import ba.etf.rma22.projekat.data.models.Anketa
 import ba.etf.rma22.projekat.data.models.AnketaTaken
 import ba.etf.rma22.projekat.data.models.Pitanje
 import ba.etf.rma22.projekat.viewmodel.OdgovorViewModel
-
+import ba.etf.rma22.projekat.viewmodel.TakeAnketaViewModel
 
 
 class FragmentPitanje(private var pocetaA:AnketaTaken, private var pitanja:Pitanje, private var velicina:Int, private var anketa:Anketa) : Fragment() {
@@ -22,22 +22,32 @@ class FragmentPitanje(private var pocetaA:AnketaTaken, private var pitanja:Pitan
     private lateinit var pagerAdapter: ViewPagerAdapter
     val plava = Color.parseColor("#0000FF")
     var odgovorViewModel =  OdgovorViewModel()
+    private var takeAnketaViewModel = TakeAnketaViewModel()
+
+    private var testInternet: Boolean = true;
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.fragment_pitanje, container, false)
 
+        takeAnketaViewModel.tetInternet(requireContext(), onSuccess ={
+
+            if(it!=true)
+                testInternet=false
+
+        }, onError = {})
+
         pitanje = view.findViewById(R.id.tekstPitanja)
-        pitanje.text = pitanja.tekstPitanja
+        //pitanje.text = pitanja.tekstPitanja
 
         listView = view.findViewById(R.id.odgovoriLista)
         zaustavi = view.findViewById(R.id.dugmeZaustavi)
 
-        val listItems = arrayOfNulls<String>(pitanja.opcije.size)
+        val listItems = arrayOfNulls<String>(pitanja.opcije!!.size)
 
-        for (i in 0 until pitanja.opcije.size) {
+        for (i in 0 until pitanja.opcije!!.size) {
 
-            val recipe = pitanja.opcije[i]
+            val recipe = pitanja.opcije!![i]
             listItems[i] = recipe
         }
 
@@ -83,7 +93,7 @@ class FragmentPitanje(private var pocetaA:AnketaTaken, private var pitanja:Pitan
         listView.performClick()
 
 
-        odgovorViewModel.getOdgovori(anketa.id, onSuccess = {
+        odgovorViewModel.getOdgovori(requireContext(),anketa.id, onSuccess = {
             val odgovori = it
             var odgovor = 0
             for(od in odgovori) {
@@ -110,8 +120,6 @@ class FragmentPitanje(private var pocetaA:AnketaTaken, private var pitanja:Pitan
     }
 
     fun onError() {
-        val toast = Toast.makeText(context, "error", Toast.LENGTH_SHORT)
-        toast.show()
     }
 
     var br:Int = 0
@@ -123,7 +131,7 @@ class FragmentPitanje(private var pocetaA:AnketaTaken, private var pitanja:Pitan
 
             var vr:Float
 
-            odgovorViewModel.getOdgovori(anketa.id, onSuccess = {
+            odgovorViewModel.getOdgovori(context!!, anketa.id, onSuccess = {
                 val odgovori = it
                 var odgovor = 0
                 for(od in odgovori) {
@@ -131,14 +139,14 @@ class FragmentPitanje(private var pocetaA:AnketaTaken, private var pitanja:Pitan
                         odgovor=od.odgovoreno
                     }
                 }
-                if(br==0 && odgovor==0 ) {
+                if(br==0 && odgovor==0 && testInternet ) {
 
                     (parent!!.getChildAt(position) as TextView).setTextColor(plava)
 
                     vr=(1.toDouble()/(velicina-1)).toFloat()
 
 
-                    odgovorViewModel.setOdgovor(pocetaA.id,pitanja.id,position+1, onSuccess = {
+                    odgovorViewModel.setOdgovor(context!!,pocetaA.id,pitanja.id,position+1, onSuccess = {
 
                         anketa.progres = it.toFloat()/100
 
@@ -160,10 +168,11 @@ class FragmentPitanje(private var pocetaA:AnketaTaken, private var pitanja:Pitan
 
         listView.performClick()
 
-        odgovorViewModel.getOdgovori(anketa.id, onSuccess = {
+        odgovorViewModel.getOdgovori(requireContext(), anketa.id, onSuccess = {
             val odgovori = it
             var odgovor = 0
             for(od in odgovori) {
+
                 if( od.pitanjeId== pitanja.id ){
                     odgovor=od.odgovoreno
                 }

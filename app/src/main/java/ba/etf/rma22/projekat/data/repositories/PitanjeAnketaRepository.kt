@@ -1,23 +1,60 @@
 package ba.etf.rma22.projekat.data.repositories
 
+import android.content.Context
+import android.database.sqlite.SQLiteException
+import ba.etf.rma22.projekat.data.AppDatabase
 import ba.etf.rma22.projekat.data.models.Pitanje
-import ba.etf.rma22.projekat.data.models.PitanjeAnketa
-import ba.etf.rma22.projekat.data.static.dajPitanjaAnketa
-import ba.etf.rma22.projekat.data.static.dajSvaPitanja
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlin.math.roundToInt
 
 class PitanjeAnketaRepository {
 
 
     companion object{
 
+        private lateinit var context: Context
+
+        fun setContext(conte: Context){
+            context = conte
+        }
+
         suspend fun getPitanja(idAnkete:Int):List<Pitanje> {
             return withContext(Dispatchers.IO) {
-                var response = ApiAdapter.retrofit.getPitanja(idAnkete)
-                val responseBody = response.body()
-                return@withContext responseBody!!
+                try {
+                    var response = ApiAdapter.retrofit.getPitanja(idAnkete)
+                    val responseBody = response.body()
+
+                    for(pita in responseBody!!)
+                        try {
+                            val db = AppDatabase.getInstance(context)
+                            val svaPIt = db.pitanjeDao().dajSvaPitanjaDb()
+                            var test=0
+                            for(pi in svaPIt) {
+                                if(pi.AnketaId==idAnkete && pi.tekstPitanja==pita.tekstPitanja && pi.opcije==pita.opcije && pi.naziv==pita.naziv){
+                                    test=1
+                                    break
+                                }
+                            }
+                            if(test==0){
+                                pita.AnketaId=idAnkete
+                                db.pitanjeDao().insertOne(pita)
+                            }
+                        } catch (e: SQLiteException) {}
+
+                    return@withContext responseBody!!
+                }
+                catch (e: Exception){
+
+                    try {
+                        val db = AppDatabase.getInstance(context)
+                        val pita = db.pitanjeDao().dajPitanjaZaAnketu(idAnkete)
+                        return@withContext pita
+                    }catch (e: Exception){
+                        return@withContext null!!
+                    }
+
+                }
+
             }
         }
 
@@ -50,7 +87,7 @@ class PitanjeAnketaRepository {
 
                 var br= zaokruzi(rezultat.toFloat())
 
-                anket.progres=br.toFloat()
+                anket!!.progres=br.toFloat()
 
                 return@withContext zaokruzi(rezultat.toFloat())
             }

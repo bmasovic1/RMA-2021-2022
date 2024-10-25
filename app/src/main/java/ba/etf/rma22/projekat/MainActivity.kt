@@ -1,10 +1,18 @@
 package ba.etf.rma22.projekat
 
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import ba.etf.rma22.projekat.data.repositories.*
+import ba.etf.rma22.projekat.viewmodel.AccountViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -12,11 +20,28 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewPagerAdapter: ViewPagerAdapter
     var br:Int=0
     var br2:Int=0
+    private var accountViewModel = AccountViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        AccountRepository.setContext(applicationContext)
+        AnketaRepository.setContext(applicationContext)
+        OdgovorRepository.setContext(applicationContext)
+        IstrazivanjeIGrupaRepository.setContext(applicationContext)
+        PitanjeAnketaRepository.setContext(applicationContext)
+        TakeAnketaRepository.setContext(applicationContext)
+
+
+        AccountRepository.setContext(applicationContext)
+
+        val user : String? = intent.extras?.getString("payload")
+        if (user != null) {
+            accountViewModel.postaviHash(applicationContext , user, onSuccess = ::onSuccess, onError = ::onError )
+        }
+
         viewPager = findViewById(R.id.pager)
         val fragments =
             mutableListOf<Fragment>()
@@ -60,7 +85,11 @@ class MainActivity : AppCompatActivity() {
         })
 
     }
+    fun onSuccess(pro:Boolean){
+    }
 
+    fun onError() {
+    }
 
 
 }
