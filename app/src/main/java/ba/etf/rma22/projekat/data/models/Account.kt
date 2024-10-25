@@ -2,9 +2,8 @@ package ba.etf.rma22.projekat.data.models
 
 import com.google.gson.annotations.SerializedName
 
-data class Istrazivanje(
+class Account (
     @SerializedName("id") val id: Int,
-    @SerializedName("naziv") val naziv: String,
-    @SerializedName("godina") val godina: String,
+    @SerializedName("student") val student: String,
+    @SerializedName("acHash") val acHash: String
 )
-

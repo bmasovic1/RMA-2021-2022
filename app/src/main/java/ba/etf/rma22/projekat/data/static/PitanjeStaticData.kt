@@ -6,20 +6,20 @@ import ba.etf.rma22.projekat.data.models.PitanjeAnketa
 fun dajSvaPitanja():List<Pitanje>{
 
     return mutableListOf<Pitanje>(
-
+/*
         Pitanje("p0","Koji NBA tim vam je najdraži.", listOf("LA Lakers","Miami Heat","Chicago Bulls","Boston Celtics")),
         Pitanje("p1","Da li pratite tenis?", listOf("Da","Ne","Povremeno")),
         Pitanje("p2","Dnevno koliko sati provodite prateći sportske aktivnosti?", listOf("1h-2h","3h-5h",">5h","Ne pratim sportske aktivnosti")),
         Pitanje("p3","Koji fudbalski tim vam je najdraži.", listOf("Real Madrid CF","FC Barcelona","Juventus F.C.","Paris Saint-Germain F.C.", "FC Bayern Munich", "Manchester United F.C.")),
         Pitanje("p4","Ko je trenutno najbolji fudbaler na svijetu?", listOf("Lionel Messi","Cristiano Ronaldo","Karim Benzema","Kylian Mbappé", "Robert Lewandowski", "Drugi"))
-
+*/
     )
 }
 
 fun dajPitanjaAnketa():List<PitanjeAnketa>{
 
     return listOf(
-
+/*
         PitanjeAnketa("p0","Anketa 1","Istrazivanje 1",0),
         PitanjeAnketa("p1","Anketa 1","Istrazivanje 1",0),
         PitanjeAnketa("p2","Anketa 1","Istrazivanje 1",0),
@@ -116,6 +116,6 @@ fun dajPitanjaAnketa():List<PitanjeAnketa>{
 
         PitanjeAnketa("p1","Anketa 26","Istrazivanje 12",0),
         PitanjeAnketa("p0","Anketa 26","Istrazivanje 12",0)
-
+*/
         )
 }

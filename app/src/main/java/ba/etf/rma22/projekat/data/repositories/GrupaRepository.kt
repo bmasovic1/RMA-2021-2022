@@ -19,7 +19,7 @@ class GrupaRepository {
         }
 
         fun getGroupsByIstrazivanje(nazivIstrazivanja: String): List<Grupa> {
-            return sveGrupe.filter { g: Grupa? -> g?.nazivIstrazivanja == nazivIstrazivanja }
+            return upisaneGrupe
         }
 
         fun getMyGroups():List<Grupa>{

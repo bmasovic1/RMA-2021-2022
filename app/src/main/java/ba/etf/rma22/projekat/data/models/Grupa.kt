@@ -1,9 +1,9 @@
 package ba.etf.rma22.projekat.data.models
 
-data class Grupa(val naziv: String, val nazivIstrazivanja: String) {
+import com.google.gson.annotations.SerializedName
 
-    override fun toString(): String {
-        return naziv;
-    }
-
-}
+data class Grupa(
+    @SerializedName("id") val id: Int,
+    @SerializedName("naziv") val naziv: String,
+    @SerializedName("IstrazivanjeId") val IstrazivanjeId: Int,
+)

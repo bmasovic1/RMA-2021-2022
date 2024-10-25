@@ -17,7 +17,7 @@ class IstrazivanjeRepository {
         }
 
         fun getIstrazivanjeByGodina(god: Int):List<Istrazivanje>{
-            return getAll().filter({i: Istrazivanje -> i.godina==god});
+            return upisanaIstrazivanja
         }
 
         fun getAll(): List<Istrazivanje> {

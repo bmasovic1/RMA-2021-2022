@@ -1,6 +1,5 @@
 package ba.etf.rma22.projekat.view
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -69,16 +68,16 @@ class ListaAnketaAdapter(var ankete: List<Anketa>, private val onItemClicked: (a
             onItemClicked(ankete[position])
         }
 
-        if(ankete[position].datumKraj.before(Date())){
+        if( ankete[position].datumKraj!=null && ankete[position].datumKraj!!.before(Date())){
 
             holder.stanjeAnkete.setImageResource(R.drawable.crvena);
             holder.progresZavrsetka.setProgress(0);
 
             //holder.datum.text = "Anketa zatvorena: "+(ankete[position].datumKraj)+"."+ (ankete[position].datumKraj?.month!!)+"."+(ankete[position].datumKraj?.year!!);
 
-            holder.datum.text = "Anketa zatvorena: " + ispisDatuma(ankete[position].datumKraj)
+            holder.datum.text = "Anketa zatvorena: " + ispisDatuma(ankete[position].datumKraj!!)
 
-        }else if(ankete[position].datumRada!=null){
+        }else if(ankete[position].datumRada!=null && ankete[position].progres==1f){
 
             holder.stanjeAnkete.setImageResource(R.drawable.plava);
 
@@ -90,14 +89,14 @@ class ListaAnketaAdapter(var ankete: List<Anketa>, private val onItemClicked: (a
 
             holder.datum.text = "Anketa urađena: " + ispisDatuma(ankete[position].datumRada!!)
 
-        }else if(ankete[position].datumPocetka.after(Date())){
+        }else if(ankete[position].datumPocetak.after(Date())){
 
             holder.stanjeAnkete.setImageResource(R.drawable.zuta);
             holder.progresZavrsetka.setProgress(0);
 
             //holder.datum.text = "Vrijeme aktiviranja: " + (ankete[position].datumPocetka.date)+"."+ (ankete[position].datumPocetka?.month!!)+"."+(ankete[position].datumPocetka?.year!!);
 
-            holder.datum.text = "Vrijeme aktiviranja: " + ispisDatuma(ankete[position].datumPocetka)
+            holder.datum.text = "Vrijeme aktiviranja: " + ispisDatuma(ankete[position].datumPocetak)
 
         }else{
 
@@ -107,8 +106,11 @@ class ListaAnketaAdapter(var ankete: List<Anketa>, private val onItemClicked: (a
                 holder.progresZavrsetka.setProgress(zaokruzi(ankete[position].progres!!))
 
             //holder.datum.text = "Vrijeme zatvaranja: " + (ankete[position].datumKraj)+"."+ (ankete[position].datumKraj?.month!!)+"."+(ankete[position].datumKraj?.year!!);
-            holder.datum.text = "Vrijeme zatvaranja: " +  ispisDatuma(ankete[position].datumKraj)
 
+            if(ankete[position].datumKraj!=null)
+                holder.datum.text = "Vrijeme zatvaranja: " +  ispisDatuma(ankete[position].datumKraj!!)
+            else
+                holder.datum.text = "Vrijeme zatvaranja: null"
 
         }
 

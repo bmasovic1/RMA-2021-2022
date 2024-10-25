@@ -2,18 +2,25 @@ package ba.etf.rma22.projekat.viewmodel
 
 import ba.etf.rma22.projekat.data.models.Pitanje
 import ba.etf.rma22.projekat.data.repositories.PitanjeAnketaRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class PitanjeAnketaViewModel {
 
-    fun dajPitanjaAnkete(nazivAnkete: String, nazivIstrazivanja: String): List<Pitanje>{
-        return PitanjeAnketaRepository.getPitanja(nazivAnkete, nazivIstrazivanja)
+    val scope = CoroutineScope(Job() + Dispatchers.Main)
+
+
+    fun dajPitanjaAnkete(idAnkete:Int, onSuccess: (pitanja: List<Pitanje>) -> Unit, onError: () -> Unit){
+
+        scope.launch{
+            val pitanja = PitanjeAnketaRepository.getPitanja(idAnkete)
+            when(pitanja){
+                is List<Pitanje> -> onSuccess?.invoke(pitanja)
+                else -> onError?.invoke()
+            }
+        }
     }
 
-    fun dajOdgovor(anketa:String, istrazivanje: String, pitanje : String):Int{
-        return PitanjeAnketaRepository.getOdgovor(anketa, istrazivanje, pitanje)
-    }
-
-    fun dodajOdgovor(anketa:String, istrazivanje: String, pitanje: String, odgovor : Int){
-        return PitanjeAnketaRepository.setOdgovor(anketa, istrazivanje, pitanje, odgovor)
-    }
 }

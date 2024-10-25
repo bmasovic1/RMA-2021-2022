@@ -5,16 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.Spinner
+import android.widget.*
 import androidx.core.view.isVisible
 import ba.etf.rma22.projekat.data.models.Grupa
 import ba.etf.rma22.projekat.data.models.Istrazivanje
 import ba.etf.rma22.projekat.viewmodel.GodinaSViewModel
-import ba.etf.rma22.projekat.viewmodel.GrupaViewModel
-import ba.etf.rma22.projekat.viewmodel.IstrazivanjeViewModel
+import ba.etf.rma22.projekat.viewmodel.IstrazivanjeIGrupaViewModel
 
 
 class FragmentIstrazivanje (): Fragment() {
@@ -36,9 +32,8 @@ class FragmentIstrazivanje (): Fragment() {
 
     private lateinit var istrazivanjeAdapter: ArrayAdapter<String>
     private lateinit var grupeAdapter: ArrayAdapter<String>
-    var istrazivanjeViewModel = IstrazivanjeViewModel()
-    var grupaViewModel = GrupaViewModel()
     var godinaSViewModel = GodinaSViewModel()
+    var istrazivanjeIGrupaViewModel = IstrazivanjeIGrupaViewModel()
 
     var godina:Int=0;
 
@@ -96,9 +91,11 @@ class FragmentIstrazivanje (): Fragment() {
                 godina= position+1
                 godinaSViewModel.postaviGodinu(position+1)
 
-                istrazivanjeAdapter.clear()
+                grupeAdapter.clear()
+                grupeSpinner.adapter=grupeAdapter
 
-                istrazivanjaSpinner.adapter= ArrayAdapter(context!!, android.R.layout.simple_list_item_1, istrazivanjeViewModel.dajNeUpisanaIstrazivanja(godina).map { p: Istrazivanje -> p.toString() })
+                istrazivanjeAdapter.clear()
+                istrazivanjeIGrupaViewModel.getNEUpisanaIstrazivanja(godina.toString(), onSuccess = ::onSuccessI, onError = ::onError)
 
 
                 if(istrazivanjaSpinner.adapter.isEmpty) {
@@ -123,7 +120,7 @@ class FragmentIstrazivanje (): Fragment() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
-                grupeSpinner.adapter = ArrayAdapter(context!!,android.R.layout.simple_list_item_1, grupaViewModel.dajGrupeZaIstrazivanja(istrazivanjeViewModel.dajNeUpisanaIstrazivanja(godina)[position]).map { g: Grupa ->g.toString() })
+                istrazivanjeIGrupaViewModel.getGrupeZaIstrazivanje(istrazivanjaSpinner.selectedItem.toString(),onSuccess = ::onSuccessG, onError = ::onError)
 
 
                 if(grupeSpinner.adapter.isEmpty) {
@@ -144,18 +141,26 @@ class FragmentIstrazivanje (): Fragment() {
 
         dodaj.setOnClickListener{
 
-            istrazivanjeViewModel.upisiIstrazivanje(istrazivanjaSpinner.selectedItem.toString(),godineSpinner.selectedItem.toString().toInt())
+            istrazivanjeIGrupaViewModel.upisiStudenta(grupeSpinner.selectedItem.toString(), onSuccess = ::onSuccessU, onError = ::onError)
 
-            grupaViewModel.upisiUGrupu(grupeSpinner.selectedItem.toString(),istrazivanjaSpinner.selectedItem.toString())
-
-            val grupa = grupaViewModel.dajGrupu(grupeSpinner.selectedItem.toString(),istrazivanjaSpinner.selectedItem.toString())
-
-            pagerAdapter.zamijeni(1, FragmentPoruka.newInstance("Uspješno ste upisani u grupu ${grupa.naziv} istraživanja ${grupa.nazivIstrazivanja}!"))
+            pagerAdapter.zamijeni(1, FragmentPoruka.newInstance("Uspješno ste upisani u grupu ${grupeSpinner.selectedItem.toString()} istraživanja ${istrazivanjaSpinner.selectedItem.toString()}!"))
             pagerAdapter.zamijeni(0, FragmentAnkete.newInstance(pagerAdapter))
 
         }
 
         return view
+    }
+
+
+    fun onError() {
+    }
+    fun onSuccessI(istrazivanja: List<Istrazivanje>) {
+        istrazivanjaSpinner.adapter= ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, istrazivanja.map { p: Istrazivanje -> p.naziv.toString() })
+    }
+    fun onSuccessG(grupe: List<Grupa>) {
+        grupeSpinner.adapter = ArrayAdapter(requireContext(),android.R.layout.simple_list_item_1, grupe.map { g: Grupa ->g.naziv.toString() })
+    }
+    fun onSuccessU(upis: Boolean) {
     }
 
 }

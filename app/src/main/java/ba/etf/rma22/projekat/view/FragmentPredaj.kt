@@ -33,8 +33,6 @@ class FragmentPredaj(private var anketa : Anketa, private var velicina:Int) : Fr
 
         predaj.setOnClickListener {
 
-            anketa.datumRada=Calendar.getInstance().time
-
             if (velicina == 1) {
 
                 pagerAdapter.zamijeni(0, FragmentAnkete.newInstance(pagerAdapter))
@@ -89,12 +87,9 @@ class FragmentPredaj(private var anketa : Anketa, private var velicina:Int) : Fr
     }
 
     fun provjera(){
-        if (anketa.datumRada!=null) {
-            predaj.isVisible = false
-        }
-        if(anketa.datumKraj.before(Date())){
-            predaj.isVisible = false
-        }
+       // if(anketa.progres==1f){
+       //      predaj.isVisible = false
+       // }
     }
 
 }

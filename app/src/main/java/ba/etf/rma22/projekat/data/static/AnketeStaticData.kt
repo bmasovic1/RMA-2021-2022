@@ -15,7 +15,7 @@ fun postaviDatum(g:Int,m:Int,d:Int): Date {
 fun sveAnkete():List<Anketa>{
 
     return listOf(
-
+/*
         Anketa("Anketa 1","Istrazivanje 1",postaviDatum(2022,1,1),postaviDatum(2023,10,14),null,73,"I1-G1",null),
         Anketa("Anketa 2","Istrazivanje 1",postaviDatum(2023,1,13),postaviDatum(2023,2,1),null,5,"I1-G2",null),
 
@@ -53,7 +53,7 @@ fun sveAnkete():List<Anketa>{
 
         Anketa("Anketa 25","Istrazivanje 12",postaviDatum(2022,4,30),postaviDatum(2022,9,27),null,61,"I12-G1",null),
         Anketa("Anketa 26","Istrazivanje 12",postaviDatum(2022,5,11),postaviDatum(2022,6,4),null,27,"I12-G2",null)
-
+*/
     );
 }
 
